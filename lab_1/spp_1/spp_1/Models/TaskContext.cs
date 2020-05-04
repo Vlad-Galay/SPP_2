@@ -15,6 +15,7 @@ namespace spp_1.Models
     {
         protected override void Seed(TaskContext db)
         {
+            db.Tasks.Add(new Task { Name = "ass", Status = "in progress", Date = DateTime.Now });
             base.Seed(db);
         }
     }

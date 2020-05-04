@@ -26,6 +26,8 @@
                 <td><p>@t.Name</p></td>
                 <td><p>@t.Status</p></td>
                 <td><p>@t.Date</p></td>
+                <td><p>@Html.ActionLink("Редактировать", "EditTask", "Home", new { id = t.Id}, null)</p></td>
+                <td><p>@Html.ActionLink("Удалить", "DeleteTask", "Home", new {id = t.Id }, null)</p></td>
             </tr>
         }
     </table>

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Data.Entity;
 
 namespace spp_1.Controllers
 {
@@ -36,6 +37,43 @@ namespace spp_1.Controllers
             db.SaveChanges();
 
             return RedirectToAction("ShowTasks");
+        }
+
+        [HttpGet]
+        public ActionResult EditTask(int? id)
+        {
+            if (id == null)
+                return HttpNotFound();
+            Task task = db.Tasks.Find(id);
+            if (task != null)
+                return View(task);
+            else
+                return HttpNotFound();
+        }
+
+        
+
+        [HttpPost]
+        public ActionResult EditTask(Task task)
+        {
+            Task OldTask = db.Tasks.Find(task.Id);
+            OldTask.Name = task.Name;
+            OldTask.Status = task.Status;
+            OldTask.Date = task.Date;
+            db.Entry(OldTask).State = EntityState.Modified;
+            db.SaveChanges();
+            return RedirectToAction("ShowTasks");
+        }
+
+        public ActionResult DeleteTask(int id)
+        {
+           
+             Task t = new Task { Id = id };
+             db.Entry(t).State = EntityState.Deleted;
+             db.SaveChanges();
+
+             return RedirectToAction("ShowTasks");
+          
         }
 
         public ActionResult Contact()
