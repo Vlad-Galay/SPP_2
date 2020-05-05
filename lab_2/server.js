@@ -56,6 +56,19 @@ app.put('/', urlencodedParser, function(req, res) { //console.log('req.files >>>
 
 });
 
+app.delete('/', urlencodedParser, function(req, res) { //console.log('req.files >>>', req.files); 
+    
+    taskInfo.splice(req.body.tasknum, 1);
+    res.render("index", {
+        taskAdded: true,
+        taskInfo
+    });
+    console.log('delete success');
+
+});
+
+
+
 app.listen(8000, function() {
     console.log('server.js listening on port 8000.');
 });

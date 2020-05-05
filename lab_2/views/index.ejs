@@ -92,6 +92,7 @@
 
     <script>
         let RowNumToUpd = false;
+        let IsDelete = false;
 
         // Загрузка названия файла в label
         $(".custom-file-input").on("change", function() {
@@ -114,13 +115,34 @@
                 FillForm(item);
             }
         });
+        
+        //нажатие кнопки на строке таблицы
+        $(document).on('contextmenu ', '.tskinf', function() {
+            let tskvalue = $(this).find('.tskvalue').text().replace(/\s+/g, " ").trim();
+            let cnfrmres = confirm("Delete " + tskvalue + "?");
+
+            let item = [];
+            for (var i = 0; i < 4; i++) {
+                item[i] = $(this).find("td:eq(" + i + ")").text().replace(/\s+/g, " ").trim();
+            }
+            item.push($(this).find(".snwclr").attr("href"));
+
+            if (cnfrmres === true) {
+                RowNumToUpd = this.rowIndex;
+                IsDelete = true;
+                DeleteTask(RowNumToUpd);
+                RowNumToUpd = false;
+                IsDelete = false;
+            }
+        });
         // Заполнение формы данными для обновления
         function FillForm(RowInfo) {
-            document.getElementById("tskinput").value = RowInfo[0];
-            document.getElementById("sttsselect").value = RowInfo[1];
-            document.getElementById("dtinput").value = RowInfo[2];
-            // document.getElementById("cstmlabel").value = RowInfo[3];
-            document.getElementById("sbmt").value = "Update";
+                document.getElementById("tskinput").value = RowInfo[0];
+                document.getElementById("sttsselect").value = RowInfo[1];
+                document.getElementById("dtinput").value = RowInfo[2];
+                // document.getElementById("cstmlabel").value = RowInfo[3];
+                document.getElementById("sbmt").value = "Update"
+            
         }
         //Form submit
         $("form").submit(function(e) {
@@ -128,11 +150,10 @@
 
             if (RowNumToUpd == false)
                 AddTask();
-            else {
+            else if(RowNumToUpd != false) {
                 UpdateTask(RowNumToUpd);
                 RowNumToUpd = false;
             }
-
         });
         // Добавление 
         function AddTask() {
@@ -158,6 +179,24 @@
                 contentType: false,
                 processData: false,
                 method: "PUT",
+                data: formData,
+                success: function(res) {
+                    location.reload();
+                    /*reset();
+                    console.log(user);
+                    $("tr[data-rowid='" + user._id + "']").replaceWith(row(user));*/
+                }
+            })
+        }
+
+        function DeleteTask(RowNumToUpd) {
+            let formData = new FormData(document.forms.taskForm);
+            formData.append('tasknum', RowNumToUpd - 1);
+            $.ajax({
+                url: "/",
+                contentType: false,
+                processData: false,
+                method: "DELETE",
                 data: formData,
                 success: function(res) {
                     location.reload();
